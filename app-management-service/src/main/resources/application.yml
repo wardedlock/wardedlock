@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: app-management-service
+  config:
+    import:
+      - optional:file:.env
+      - optional:file:../.env
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${APP_MANAGEMENT_DB}
+    username: ${APP_MANAGEMENT_USER}
+    password: ${APP_MANAGEMENT_PASSWORD}
+
+server:
+  port: ${APP_MANAGEMENT_SERVICE_PORT}

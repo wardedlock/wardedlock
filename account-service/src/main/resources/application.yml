@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: account-service
+  config:
+    import:
+      - optional:file:.env
+      - optional:file:../.env
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${ACCOUNT_DB}
+    username: ${ACCOUNT_USER}
+    password: ${ACCOUNT_PASSWORD}
+
+server:
+  port: ${ACCOUNT_SERVICE_PORT}

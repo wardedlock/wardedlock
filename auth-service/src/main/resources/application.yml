@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: auth-service
+  config:
+    import:
+      - optional:file:.env
+      - optional:file:../.env
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${AUTH_DB}
+    username: ${AUTH_USER}
+    password: ${AUTH_PASSWORD}
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+
+server:
+  port: ${AUTH_SERVICE_PORT}

@@ -1,0 +1,23 @@
+{
+  "name": "wardedlock",
+  "version": "1.0.0",
+  "description": "Identity and Access Management (IAM) service.",
+  "main": "index.js",
+  "scripts": {
+    "bootstrap": "bash scripts/bootstrap.sh",
+    "dev": "concurrently \"npm:gateway\" \"npm:auth\" \"npm:account\" \"npm:role\" \"npm:app\" \"npm:notification\"",
+    "gateway": "node scripts/dev-run.js :gateway:bootRun",
+    "auth": "node scripts/dev-run.js :auth-service:bootRun",
+    "account": "node scripts/dev-run.js :account-service:bootRun",
+    "role": "node scripts/dev-run.js :role-service:bootRun",
+    "app": "node scripts/dev-run.js :app-management-service:bootRun",
+    "notification": "node scripts/dev-run.js :notification-service:bootRun"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

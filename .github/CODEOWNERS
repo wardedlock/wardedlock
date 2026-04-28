@@ -1,0 +1,9 @@
+# This file defines who owns specific files or paths in this repository.
+# When a pull request is opened, these owners will automatically be requested for review.
+
+# Global owner: Any change requires review from the lead maintainer.
+*       trunglcct@gmail.com @wardedlock
+
+# Example of specific component ownership:
+# /core-common/             @wardedlock/core-team
+# /auth-service/            @wardedlock/security-team

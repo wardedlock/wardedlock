@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: role-service
+  config:
+    import:
+      - optional:file:.env
+      - optional:file:../.env
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${ROLE_DB}
+    username: ${ROLE_USER}
+    password: ${ROLE_PASSWORD}
+
+server:
+  port: ${ROLE_SERVICE_PORT}

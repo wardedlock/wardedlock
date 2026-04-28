@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: notification-service
+  config:
+    import:
+      - optional:file:.env
+      - optional:file:../.env
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${NOTIFICATION_DB}
+    username: ${NOTIFICATION_USER}
+    password: ${NOTIFICATION_PASSWORD}
+  mail:
+    host: ${SMTP_HOST}
+    port: ${SMTP_PORT}
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
+server:
+  port: ${NOTIFICATION_SERVICE_PORT}

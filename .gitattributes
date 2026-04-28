@@ -1,0 +1,21 @@
+# Default behavior
+* text=auto
+
+# Code sources
+*.java text
+*.kt text
+*.kts text
+*.xml text
+*.yml text
+*.yaml text
+*.properties text
+*.json text
+*.md text
+
+# Shell scripts MUST always use LF (macOS/Linux)
+*.sh text eol=lf
+gradlew text eol=lf
+
+# Windows scripts MUST always use CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf

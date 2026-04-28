@@ -1,0 +1,131 @@
+services:
+  # ============================================================================
+  # 1. DATABASE SYSTEM (PostgreSQL)
+  # ============================================================================
+  postgres:
+    image: postgres:17-alpine
+    container_name: wardedlock-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-wardedlock_root}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      # Passthrough variables for the init script
+      AUTH_DB: ${AUTH_DB}
+      AUTH_USER: ${AUTH_USER}
+      AUTH_PASSWORD: ${AUTH_PASSWORD:?AUTH_PASSWORD is required}
+      ACCOUNT_DB: ${ACCOUNT_DB}
+      ACCOUNT_USER: ${ACCOUNT_USER}
+      ACCOUNT_PASSWORD: ${ACCOUNT_PASSWORD:?ACCOUNT_PASSWORD is required}
+      ROLE_DB: ${ROLE_DB}
+      ROLE_USER: ${ROLE_USER}
+      ROLE_PASSWORD: ${ROLE_PASSWORD:?ROLE_PASSWORD is required}
+      APP_MANAGEMENT_DB: ${APP_MANAGEMENT_DB}
+      APP_MANAGEMENT_USER: ${APP_MANAGEMENT_USER}
+      APP_MANAGEMENT_PASSWORD: ${APP_MANAGEMENT_PASSWORD:?APP_MANAGEMENT_PASSWORD is required}
+      NOTIFICATION_DB: ${NOTIFICATION_DB}
+      NOTIFICATION_USER: ${NOTIFICATION_USER}
+      NOTIFICATION_PASSWORD: ${NOTIFICATION_PASSWORD:?NOTIFICATION_PASSWORD is required}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./infra/postgres/init-multi-db.sh:/docker-entrypoint-initdb.d/init-multi-db.sh:ro
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-postgres} -d $${POSTGRES_DB:-wardedlock_root}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - wardedlock-network
+
+  # ============================================================================
+  # 2. CACHE & MESSAGING (Redis)
+  # ============================================================================
+  redis:
+    image: redis:7.4-alpine
+    container_name: wardedlock-redis
+    restart: unless-stopped
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?REDIS_PASSWORD is required}
+    command: redis-server --requirepass ${REDIS_PASSWORD:?REDIS_PASSWORD is required}
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - wardedlock-network
+
+  # ============================================================================
+  # 3. MAIL DEVELOPMENT (MailPit)
+  # ============================================================================
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: wardedlock-mailpit
+    restart: unless-stopped
+    ports:
+      - "${SMTP_PORT:-1025}:1025" # SMTP server
+      - "${MAILPIT_UI_PORT:-8025}:8025" # Web UI
+    networks:
+      - wardedlock-network
+
+  # ============================================================================
+  # 4. OBJECT STORAGE (MinIO)
+  # ============================================================================
+  minio:
+    image: minio/minio:latest
+    container_name: wardedlock-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY:?S3_SECRET_KEY is required}
+    ports:
+      - "${S3_API_PORT:-9000}:9000" # API
+      - "${S3_CONSOLE_PORT:-9001}:9001" # Dashboard
+    volumes:
+      - minio-data:/data
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    networks:
+      - wardedlock-network
+
+  # ============================================================================
+  # 5. MONITORING (Prometheus)
+  # ============================================================================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: wardedlock-prometheus
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    ports:
+      - "${METRICS_PORT:-9090}:9090"
+    healthcheck:
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9090/-/healthy" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - wardedlock-network
+
+networks:
+  wardedlock-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+  redis-data:
+  minio-data:
+  prometheus-data:
