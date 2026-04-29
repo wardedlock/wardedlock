@@ -1,0 +1,47 @@
+wardedlock:
+  cache:
+    ttl:
+      session: 30m
+      refresh-token: 14d
+      pkce: 10m
+      login-attempts: 15m
+      user-permissions: 5m
+      idempotency-key: 24h
+      jwks-cache: 10m
+    lettuce:
+      command-timeout: 2s
+      pool-max-active: 16
+      pool-max-idle: 8
+      shutdown-timeout: 100ms
+  security:
+    jwt:
+      issuer: ${JWT_ISSUER:http://localhost:8080}
+      audience: wardedlock
+      access-token-ttl: 15m
+      refresh-token-ttl: 14d
+      jwks-cache-ttl: 10m
+      active-kid: ${JWT_ACTIVE_KID:default}
+    argon2:
+      memory-kb: 65536
+      iterations: 3
+      parallelism: 1
+    hmac:
+      signature-tolerance-seconds: 300
+  ratelimit:
+    rules:
+      "[/auth/login]":
+        limit: 60
+        window-seconds: 60
+        key-strategy: IP
+      "[/auth/password/forgot]":
+        limit: 3
+        window-seconds: 3600
+        key-strategy: IDENTIFIER_PLUS_IP
+      "[/me/export]":
+        limit: 1
+        window-seconds: 86400
+        key-strategy: USER
+      "[/oauth2/token]":
+        limit: 120
+        window-seconds: 60
+        key-strategy: CLIENT_ID
