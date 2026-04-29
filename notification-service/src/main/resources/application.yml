@@ -9,6 +9,8 @@ spring:
     url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${NOTIFICATION_DB}
     username: ${NOTIFICATION_USER}
     password: ${NOTIFICATION_PASSWORD}
+  flyway:
+    enabled: false   # External Flyway runner handles migration; see ADR-0004
   mail:
     host: ${SMTP_HOST}
     port: ${SMTP_PORT}

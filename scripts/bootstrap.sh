@@ -6,10 +6,31 @@ set -e
 # Change to the project root relative to this script
 cd "$(dirname "$0")/.."
 
+# Usage:
+#   bash scripts/bootstrap.sh                       # Dev mode: copy as-is
+#   bash scripts/bootstrap.sh --force               # Refresh dev .env
+#   bash scripts/bootstrap.sh --randomize           # Randomize secrets
+#   bash scripts/bootstrap.sh --force --randomize   # Wipe + randomize
+
 FORCE=false
-if [[ "$1" == "--force" ]]; then
-    FORCE=true
-fi
+RANDOMIZE=false
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --force)
+            FORCE=true
+            ;;
+        --randomize|--secure)
+            RANDOMIZE=true
+            ;;
+        *)
+            echo "❌ Unknown flag: $1"
+            echo "Usage: $0 [--force] [--randomize]"
+            exit 1
+            ;;
+    esac
+    shift
+done
 
 echo "🚀 Bootstrapping WardedLock Environment Setup..."
 
@@ -28,7 +49,7 @@ if [ ! -f .env ] || [ "$FORCE" = true ]; then
     SECRETS_TO_RANDOMIZE=(
         POSTGRES_PASSWORD
         AUTH_PASSWORD ACCOUNT_PASSWORD ROLE_PASSWORD
-        APP_MANAGEMENT_PASSWORD NOTIFICATION_PASSWORD
+        APP_MANAGEMENT_PASSWORD NOTIFICATION_PASSWORD AUDIT_PASSWORD
         REDIS_PASSWORD S3_SECRET_KEY
     )
 
@@ -45,7 +66,7 @@ if [ ! -f .env ] || [ "$FORCE" = true ]; then
             fi
         done
 
-        if [ "$found" = true ]; then
+        if [ "$found" = true ] && [ "$RANDOMIZE" = true ]; then
             RANDOM_PASS=$(openssl rand -base64 32 | tr -dc 'A-Za-z0-9' | head -c 24)
             echo "$key=$RANDOM_PASS"
         else
@@ -53,7 +74,12 @@ if [ ! -f .env ] || [ "$FORCE" = true ]; then
         fi
     done < .env.example > .env
     
-    echo "✅ Replaced development default passwords with secure random variants."
+    if [ "$RANDOMIZE" = true ]; then
+        echo "✅ Generated .env with randomized secrets (production-grade)."
+    else
+        echo "✅ Generated .env from .env.example (dev defaults preserved)."
+        echo "ℹ️  Run with --randomize for staging/prod preparation."
+    fi
 
     # Validate generated .env for empty assignments
     echo "🔍 Validating environment assignments..."
@@ -67,7 +93,7 @@ if [ ! -f .env ] || [ "$FORCE" = true ]; then
     REQUIRED_KEYS=(
         POSTGRES_PASSWORD
         AUTH_PASSWORD ACCOUNT_PASSWORD ROLE_PASSWORD
-        APP_MANAGEMENT_PASSWORD NOTIFICATION_PASSWORD
+        APP_MANAGEMENT_PASSWORD NOTIFICATION_PASSWORD AUDIT_PASSWORD
         REDIS_PASSWORD S3_SECRET_KEY
     )
 

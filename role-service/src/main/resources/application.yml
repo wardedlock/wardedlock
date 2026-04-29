@@ -9,6 +9,8 @@ spring:
     url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${ROLE_DB}
     username: ${ROLE_USER}
     password: ${ROLE_PASSWORD}
+  flyway:
+    enabled: false   # External Flyway runner handles migration; see ADR-0004
 
 server:
   port: ${ROLE_SERVICE_PORT}

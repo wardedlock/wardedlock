@@ -7,8 +7,6 @@ services:
     container_name: wardedlock-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-wardedlock_root}
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
       # Passthrough variables for the init script
       AUTH_DB: ${AUTH_DB}
@@ -26,16 +24,50 @@ services:
       NOTIFICATION_DB: ${NOTIFICATION_DB}
       NOTIFICATION_USER: ${NOTIFICATION_USER}
       NOTIFICATION_PASSWORD: ${NOTIFICATION_PASSWORD:?NOTIFICATION_PASSWORD is required}
+      AUDIT_DB: ${AUDIT_DB}
+      AUDIT_USER: ${AUDIT_USER}
+      AUDIT_PASSWORD: ${AUDIT_PASSWORD:?AUDIT_PASSWORD is required}
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./infra/postgres/init-multi-db.sh:/docker-entrypoint-initdb.d/init-multi-db.sh:ro
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-postgres} -d $${POSTGRES_DB:-wardedlock_root}" ]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-postgres}"]
       interval: 5s
-      timeout: 5s
-      retries: 5
+      timeout: 3s
+      retries: 10
+    networks:
+      - wardedlock-network
+
+  # ============================================================================
+  # 1.5 FLYWAY MIGRATION SERVICE
+  # ============================================================================
+  flyway:
+    image: flyway/flyway:10-alpine
+    container_name: wardedlock-flyway
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./infra/migrations:/flyway/sql:ro
+      - ./infra/flyway/migrate-all.sh:/flyway/migrate-all.sh:ro
+      - ./infra/flyway/flyway.conf:/flyway/conf/flyway.conf:ro
+    environment:
+      AUTH_USER: ${AUTH_USER}
+      AUTH_PASSWORD: ${AUTH_PASSWORD}
+      ACCOUNT_USER: ${ACCOUNT_USER}
+      ACCOUNT_PASSWORD: ${ACCOUNT_PASSWORD}
+      ROLE_USER: ${ROLE_USER}
+      ROLE_PASSWORD: ${ROLE_PASSWORD}
+      APP_MANAGEMENT_USER: ${APP_MANAGEMENT_USER}
+      APP_MANAGEMENT_PASSWORD: ${APP_MANAGEMENT_PASSWORD}
+      NOTIFICATION_USER: ${NOTIFICATION_USER}
+      NOTIFICATION_PASSWORD: ${NOTIFICATION_PASSWORD}
+      AUDIT_USER: ${AUDIT_USER}
+      AUDIT_PASSWORD: ${AUDIT_PASSWORD}
+    entrypoint: ["/bin/bash", "/flyway/migrate-all.sh"]
+    restart: "no"
     networks:
       - wardedlock-network
 

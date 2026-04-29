@@ -9,7 +9,7 @@ function create_user_and_database() {
 	local user=$2
 	local password=$3
 	echo "  Creating user and database '$database'..."
-	psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
+	psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "postgres" <<-EOSQL
 	    CREATE USER $user WITH PASSWORD '$password';
 	    CREATE DATABASE $database;
 	    GRANT ALL PRIVILEGES ON DATABASE $database TO $user;
@@ -26,5 +26,6 @@ if [ -n "$ACCOUNT_DB" ]; then create_user_and_database "$ACCOUNT_DB" "$ACCOUNT_U
 if [ -n "$ROLE_DB" ]; then create_user_and_database "$ROLE_DB" "$ROLE_USER" "$ROLE_PASSWORD"; fi
 if [ -n "$APP_MANAGEMENT_DB" ]; then create_user_and_database "$APP_MANAGEMENT_DB" "$APP_MANAGEMENT_USER" "$APP_MANAGEMENT_PASSWORD"; fi
 if [ -n "$NOTIFICATION_DB" ]; then create_user_and_database "$NOTIFICATION_DB" "$NOTIFICATION_USER" "$NOTIFICATION_PASSWORD"; fi
+if [ -n "$AUDIT_DB" ]; then create_user_and_database "$AUDIT_DB" "$AUDIT_USER" "$AUDIT_PASSWORD"; fi
 
 echo "✅ All microservice databases initialized."
