@@ -81,3 +81,15 @@ npm run <service-name>
   git config core.autocrlf input
   ```
 - **Linux Docker Access**: Prometheus connects to host-running services via `host.docker.internal`.
+
+---
+
+## 🌐 i18n encoding
+Non-English .properties files (e.g. `errors_vi.properties`) are stored as ASCII with `\uXXXX` escapes to be encoding-immune across editors and OSes.
+
+If CI fails with an encoding error or you edited a non-English .properties file directly:
+```bash
+npm run i18n:fix     # converts non-ASCII chars to \uXXXX escapes
+git add -u && git commit
+```
+CI runs `npm run i18n:check` (= `./gradlew nativeToAsciiCheck`) on every PR; this is also wired into `./gradlew check`.

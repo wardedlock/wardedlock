@@ -1,1 +1,2 @@
 dev.wardedlock.common.config.CommonConfigAutoConfiguration
+dev.wardedlock.common.error.handler.ErrorHandlingAutoConfiguration

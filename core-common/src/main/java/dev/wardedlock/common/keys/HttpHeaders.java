@@ -14,5 +14,12 @@ public final class HttpHeaders {
     public static final String TRACEPARENT = "traceparent";
     public static final String TRACESTATE = "tracestate";
 
+    public static final class Mdc {
+        public static final String REQUEST_ID = "request_id";
+        public static final String TRACE_ID = "trace_id";
+
+        private Mdc() {}
+    }
+
     private HttpHeaders() {}
 }

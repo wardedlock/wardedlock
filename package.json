@@ -20,7 +20,10 @@
     "migrate": "docker compose run --rm flyway",
     "migrate:info": "docker compose run --rm flyway flyway info",
     "migrate:repair": "docker compose run --rm flyway flyway repair",
-    "migrate:validate": "docker compose run --rm flyway flyway validate"
+    "migrate:validate": "docker compose run --rm flyway flyway validate",
+    "i18n:convert": "node scripts/run-gradle.mjs nativeToAscii",
+    "i18n:check": "node scripts/run-gradle.mjs nativeToAsciiCheck",
+    "i18n:fix": "node scripts/run-gradle.mjs nativeToAscii"
   },
   "keywords": [],
   "author": "",
