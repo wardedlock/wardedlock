@@ -92,4 +92,6 @@ If CI fails with an encoding error or you edited a non-English .properties file 
 npm run i18n:fix     # converts non-ASCII chars to \uXXXX escapes
 git add -u && git commit
 ```
+For more details on how the system works and how to add new translations, see the [i18n Detailed Guide](./core-common/docs/i18n.md).
+
 CI runs `npm run i18n:check` (= `./gradlew nativeToAsciiCheck`) on every PR; this is also wired into `./gradlew check`.

@@ -2,6 +2,7 @@ plugins {
     id("wardedlock.java-conventions")
     id("wardedlock.spring-boot-microservice")
     id("wardedlock.web-security-conventions")
+    id("wardedlock.mapstruct-conventions")
 }
 
 description = "notification-service"

@@ -3,6 +3,7 @@ plugins {
     id("wardedlock.i18n-conventions")
     id("org.springframework.boot")
     id("io.spring.dependency-management")
+    `java-test-fixtures`
 }
 
 description = "core-common"
@@ -12,9 +13,16 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("com.fasterxml.jackson.core:jackson-databind")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    compileOnly("jakarta.servlet:jakarta.servlet-api")
+
+    testFixturesImplementation("org.springframework.boot:spring-boot-starter-validation")
+    testFixturesImplementation("org.assertj:assertj-core")
+
 }
 
 tasks.getByName<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
