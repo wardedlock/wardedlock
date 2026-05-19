@@ -15,7 +15,7 @@ wardedlock:
       shutdown-timeout: 100ms
   security:
     jwt:
-      issuer: ${JWT_ISSUER:http://localhost:8080}
+      issuer: ${JWT_ISSUER:?JWT Issuer must be configured}
       audience: wardedlock
       access-token-ttl: 15m
       refresh-token-ttl: 14d
@@ -45,3 +45,8 @@ wardedlock:
         limit: 120
         window-seconds: 60
         key-strategy: CLIENT_ID
+  platform:
+    docs:
+      base-url: ${DOCS_BASE_URL:?Platform docs base URL must be configured}
+
+

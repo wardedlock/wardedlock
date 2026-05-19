@@ -2,6 +2,8 @@ plugins {
     java
 }
 
+apply(plugin = "wardedlock.core.test-conventions")
+
 group = "dev.wardedlock"
 version = "0.0.1-SNAPSHOT"
 
@@ -13,10 +15,6 @@ java {
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
 }
 
 repositories {

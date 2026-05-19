@@ -1,12 +1,16 @@
 plugins {
-    id("wardedlock.java-conventions")
-    id("wardedlock.spring-boot-microservice")
+    id("wardedlock.core.java-conventions")
+    id("wardedlock.core.boot")
+    id("wardedlock.web.webflux")
+    id("wardedlock.data.redis-reactive")
+    // TODO: gateway JWT verification plugin pending decision (SRS §5.1)
 }
 
 description = "gateway"
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
+    implementation(project(":core-common"))
+    
     implementation("org.springframework.boot:spring-boot-starter-security-oauth2-client")
     implementation("org.springframework.boot:spring-boot-starter-security-oauth2-resource-server")
     implementation("org.springframework.cloud:spring-cloud-starter-gateway-server-webmvc")

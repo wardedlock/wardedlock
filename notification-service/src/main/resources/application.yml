@@ -6,20 +6,25 @@ spring:
       - optional:file:.env
       - optional:file:../.env
   datasource:
-    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${NOTIFICATION_DB}
-    username: ${NOTIFICATION_USER}
-    password: ${NOTIFICATION_PASSWORD}
+    url: jdbc:postgresql://${POSTGRES_HOST:?POSTGRES_HOST is required}:${POSTGRES_PORT:?POSTGRES_PORT is required}/${NOTIFICATION_DB:?NOTIFICATION_DB is required}
+    username: ${NOTIFICATION_USER:?NOTIFICATION_USER is required}
+    password: ${NOTIFICATION_PASSWORD:?NOTIFICATION_PASSWORD is required}
   flyway:
     enabled: false   # External Flyway runner handles migration; see ADR-0004
   mail:
-    host: ${SMTP_HOST}
-    port: ${SMTP_PORT}
+    host: ${SMTP_HOST:?SMTP_HOST is required}
+    port: ${SMTP_PORT:?SMTP_PORT is required}
     properties:
       mail:
         smtp:
           auth: false
           starttls:
             enable: false
+  data:
+    redis:
+      host: ${REDIS_HOST:?REDIS_HOST is required}
+      port: ${REDIS_PORT:?REDIS_PORT is required}
+      password: ${REDIS_PASSWORD:?REDIS_PASSWORD is required}
 
 server:
-  port: ${NOTIFICATION_SERVICE_PORT}
+  port: ${NOTIFICATION_SERVICE_PORT:?NOTIFICATION_SERVICE_PORT is required}

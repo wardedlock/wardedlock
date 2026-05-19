@@ -8,7 +8,9 @@ Accepted
 
 ## Context
 
-We are migrating our database initialization strategy for our multi-service, multi-database architecture. Our application currently uses six distinct Postgres databases: `wl_auth`, `wl_account`, `wl_role`, `wl_app_management`, `wl_notification`, and one shared infra database `wl_audit`. 
+We are migrating our database initialization strategy for our multi-service, multi-database architecture. Our application currently uses six distinct Postgres databases: `wl_auth`, `wl_account`, `wl_role`, `wl_app_management`, `wl_notification`, and one shared infra database `wl_audit`.
+
+> **Note:** `wl_audit` is an infrastructure database managed by the dedicated Flyway service. It is NOT owned by any specific microservice — multiple services write audit logs to it. 
 
 Two main approaches were considered for executing migrations:
 1. **Option A (Spring Boot auto-migrate):** Letting each Spring Boot service run its own migrations on startup (`spring.flyway.enabled=true`) using migrations stored in each service's classpath (`src/main/resources/db/migration`).
@@ -41,3 +43,11 @@ In dev mode, Spring Boot services run natively (foreman/concurrently) while infr
 2. The `npm run dev` script enforces order: `db:up → migrate → app start`. Developers should never run `foreman start` or `gradle bootRun` directly without first ensuring `npm run migrate` has completed.
 
 In production (future docker-compose.prod.yml), all services will run inside Docker; `depends_on: flyway: { condition: service_completed_successfully }` will be added to each app service, making compensating control (1) redundant but harmless.
+
+## Dynamic Testing Execution Model
+
+During integration testing (JUnit 5 / Gradle), the dev vs. prod execution model is bridged by our dynamic test infrastructure:
+
+1. **Orchestrated Migrations**: Integration tests annotated with `@WardedlockIntegrationTest` automatically spin up dynamic, isolated PostgreSQL test containers.
+2. **Shared DDL Scripts**: Rather than maintaining separate classpath DDLs for testing, the system programmatically mounts and executes the canonical Flyway migrations from `infra/migrations/` (leveraging `FlywayTestSupport`) against each dynamic schema prior to context boot.
+3. **Property Injection**: Runtime properties like `spring.datasource.url` and `spring.flyway.url` are dynamically resolved and injected, keeping local resources decoupled and zero-config.

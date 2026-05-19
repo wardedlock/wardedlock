@@ -1,0 +1,7 @@
+server:
+  port: 0
+
+wardedlock:
+  security:
+    jwt:
+      issuer: http://localhost:8080

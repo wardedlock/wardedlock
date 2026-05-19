@@ -61,9 +61,16 @@ npm run <service-name>
 ---
 
 ## 🧪 Verification & Testing
-- **Full Check**: `./gradlew check --no-daemon` (Runs all tests and static analysis)
-- **Unit Tests**: `./gradlew test --no-daemon`
-- **Integration Tests**: `./gradlew integrationTest --no-daemon`
+WardedLock employs a **dynamic, isolated test infrastructure** leveraging Testcontainers. Integration tests automatically spin up Docker containers representing downstream infrastructure on randomized ports with dynamic property mapping.
+
+- **Full Suite (With Infrastructure)**: `./gradlew test` (Requires Docker daemon running)
+- **Fast Local Feedback (Skip Infrastructure)**: `./gradlew test -PskipInfrastructureTests` (Bypasses Docker containers and runs unit tests only)
+- **Architecture Gates**: `./gradlew :arch-tests:test` (Runs ArchUnit architectural tests)
+
+For comprehensive guides and configuration specifications, refer to:
+- [Dynamic Test Infrastructure Specification](./docs/test-infrastructure.md)
+- [Developer Integration Testing Guide](./core-common/docs/testing.md)
+- [Developer Guidebook (Adding New Microservices)](./docs/developer-guide.md)
 
 ---
 

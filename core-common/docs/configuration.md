@@ -12,14 +12,24 @@ Global settings used by the platform.
 Settings for authentication and authorization.
 - `jwt.issuer`: The expected issuer of JWT tokens.
 - `jwt.audience`: The expected audience.
-- `cors.*`: Standard CORS configuration (allowed origins, methods, etc.).
+- `jwt.accessTokenTtl`: Access token time-to-live (e.g., `15m`).
+- `jwt.refreshTokenTtl`: Refresh token time-to-live (e.g., `30d`).
 
 ### 3. Cache Properties (`wardedlock.cache`)
 Standardized cache settings for Redis.
-- `prefix`: The global prefix for all cache keys.
-- `defaultTtl`: Default expiration time for cached items.
+- `ttl.session`: Session cache TTL.
+- `ttl.refreshToken`: Refresh token cache TTL.
+- `ttl.pkce`: PKCE code cache TTL.
+- `ttl.loginAttempts`: Login attempts cache TTL.
+- `ttl.userPermissions`: User permissions cache TTL.
+- `ttl.idempotencyKey`: Idempotency key cache TTL.
+- `ttl.jwksCache`: JWKS cache TTL.
+- `lettuce.commandTimeout`: Lettuce command timeout.
+- `lettuce.poolMaxActive`: Maximum active connections.
+- `lettuce.poolMaxIdle`: Maximum idle connections.
+- `lettuce.shutdownTimeout`: Shutdown timeout.
 
-### 4. Rate Limiting (`wardedlock.rate-limit`)
+### 4. Rate Limiting (`wardedlock.ratelimit`)
 API protection thresholds.
 - `enabled`: Global toggle.
 - `requestsPerSecond`: Default throughput limit.
@@ -35,8 +45,19 @@ wardedlock:
     jwt:
       issuer: https://auth.wardedlock.dev
   cache:
-    prefix: account-service
-    defaultTtl: 3600s
+    ttl:
+      session: 30m
+      refreshToken: 30d
+      pkce: 10m
+      loginAttempts: 15m
+      userPermissions: 1h
+      idempotencyKey: 24h
+      jwksCache: 1h
+    lettuce:
+      commandTimeout: 5s
+      poolMaxActive: 100
+      poolMaxIdle: 10
+      shutdownTimeout: 10s
 ```
 
 ## 🧪 Validation

@@ -6,16 +6,16 @@ spring:
       - optional:file:.env
       - optional:file:../.env
   datasource:
-    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${AUTH_DB}
-    username: ${AUTH_USER}
-    password: ${AUTH_PASSWORD}
+    url: jdbc:postgresql://${POSTGRES_HOST:?POSTGRES_HOST is required}:${POSTGRES_PORT:?POSTGRES_PORT is required}/${AUTH_DB:?AUTH_DB is required}
+    username: ${AUTH_USER:?AUTH_USER is required}
+    password: ${AUTH_PASSWORD:?AUTH_PASSWORD is required}
   flyway:
     enabled: false   # External Flyway runner handles migration; see ADR-0004
   data:
     redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
-      password: ${REDIS_PASSWORD}
+      host: ${REDIS_HOST:?REDIS_HOST is required}
+      port: ${REDIS_PORT:?REDIS_PORT is required}
+      password: ${REDIS_PASSWORD:?REDIS_PASSWORD is required}
 
 server:
-  port: ${AUTH_SERVICE_PORT}
+  port: ${AUTH_SERVICE_PORT:?AUTH_SERVICE_PORT is required}

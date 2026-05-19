@@ -20,7 +20,14 @@ Located in `dev.wardedlock.common.keys.HttpHeaders`.
 Located in `dev.wardedlock.common.keys.RedisKeys`.
 
 Provides a consistent namespace for caching across services.
-- Format: `wardedlock:{namespace}:{purpose}:{id}`
+- Format: `{namespace}:{purpose}:{id}`
+
+**Example Keys:**
+- `auth:session:{uuid}` — User session storage.
+- `role:cache:{roleId}` — Role permission cache.
+- `ratelimit:ip:{ipAddress}` — IP-based rate limiting counters.
+- `idempotency:key:{idempotencyKey}` — Idempotent request deduplication.
+- `jwks:cache` — JWKS public key cache.
 
 ---
 
@@ -29,7 +36,30 @@ Located in `dev.wardedlock.common.keys.EventNames`.
 
 Centralized event type names for the platform's Event-Driven Architecture. Use these when publishing or subscribing to messages on the event bus (e.g., Kafka, RabbitMQ).
 
-**Example Namespaces:**
-- `identity.*`: User and Auth events.
-- `audit.*`: System audit logs.
-- `security.*`: Threat detection and alert events.
+**Event Streams:**
+- `stream:notifications.v1` — Notification events.
+- `stream:audit.v1` — Audit log events.
+- `stream:notifications.dlq` — Notification dead letter queue.
+
+**User Events:**
+- `user.created.v1` — User registration.
+- `user.updated.v1` — User profile update.
+- `user.deleted.v1` — User deletion.
+- `user.email_verified.v1` — Email verification.
+- `user.locked.v1` — User account locked.
+
+**Auth Events:**
+- `auth.login_success.v1` — Successful login.
+- `auth.login_failed.v1` — Failed login attempt.
+- `auth.password_changed.v1` — Password change.
+- `auth.mfa_enabled.v1` — MFA enabled.
+- `auth.idempotency_replay.v1` — Idempotent request replay.
+
+**App Events:**
+- `app.created.v1` — Application created.
+- `app.secret_rotated.v1` — Application secret rotated.
+
+**Webhook Events:**
+- `webhook.delivered.v1` — Webhook delivery success.
+- `webhook.failed.v1` — Webhook delivery failure.
+- `webhook.disabled.v1` — Webhook disabled.

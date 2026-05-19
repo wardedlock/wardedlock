@@ -17,4 +17,6 @@ dependencies {
     
     testImplementation("org.springframework.boot:spring-boot-starter-actuator-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    testImplementation(testFixtures(project(":core-common")))
 }

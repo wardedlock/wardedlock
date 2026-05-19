@@ -1,7 +1,5 @@
 plugins {
-    java
-    id("org.springframework.boot")
-    id("io.spring.dependency-management")
+    id("wardedlock.core.java-conventions")
 }
 
 dependencies {
@@ -12,4 +10,5 @@ dependencies {
     
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
     testImplementation("org.springframework.boot:spring-boot-starter-flyway-test")
+    testImplementation("org.testcontainers:postgresql:1.20.4")
 }

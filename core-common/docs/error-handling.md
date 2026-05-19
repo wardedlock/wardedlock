@@ -39,11 +39,12 @@ Always prefer specific exceptions over generic ones.
 
 | Exception | HTTP Status | Description |
 | :--- | :--- | :--- |
-| `NotFoundException` | 404 | Resource does not exist. |
+| `NotFoundException` | 404 | Resource does not exist. Use `NotFoundException.resourceNotFound("Entity", id)`. |
 | `ConflictException` | 409 | State conflict (e.g., duplicate unique key). |
 | `AuthException` | 401 | Authentication failure. |
 | `ForbiddenException` | 403 | Insufficient permissions. |
 | `ValidationException` | 400 | Client input is invalid. |
+| `RateLimitException` | 429 | Rate limit exceeded. |
 | `UpstreamException` | 502/503/504 | Dependency failure. |
 
 ### 2. Validation Errors
@@ -57,7 +58,16 @@ throw ValidationException.fieldRequired("username");
 throw ValidationException.formatInvalid("age", "must be a positive number");
 ```
 
-### 3. Internationalization (i18n)
+### 3. Rate Limit Errors
+`RateLimitException` is thrown when rate limits are exceeded. Use the factory method:
+
+```java
+throw RateLimitException.exceeded(Duration.ofSeconds(60));
+```
+
+Returns HTTP 429 Too Many Requests with a `Retry-After` header.
+
+### 4. Internationalization (i18n)
 Error messages are localized using Spring's `MessageSource`. Each `ErrorCode` maps to a message key: `error.<code_name>`.
 
 Example: `ErrorCode.NOT_FOUND` maps to `error.not_found`.

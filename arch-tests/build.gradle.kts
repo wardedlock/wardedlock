@@ -28,7 +28,7 @@ dependencies {
     testImplementation(project(":role-service"))
     testImplementation(project(":app-management-service"))
     testImplementation(project(":notification-service"))
-    testImplementation(project(":core-common"))
+    testImplementation(testFixtures(project(":core-common")))
     testImplementation("com.tngtech.archunit:archunit-junit5:1.4.1")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")

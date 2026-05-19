@@ -5,6 +5,11 @@ spring:
     import:
       - optional:file:.env
       - optional:file:../.env
+  data:
+    redis:
+      host: ${REDIS_HOST:?REDIS_HOST is required}
+      port: ${REDIS_PORT:?REDIS_PORT is required}
+      password: ${REDIS_PASSWORD:?REDIS_PASSWORD is required}
   cloud:
     gateway:
       routes:
@@ -14,4 +19,4 @@ spring:
             - Path=/auth/**
 
 server:
-  port: ${GATEWAY_SERVICE_PORT}
+  port: ${GATEWAY_SERVICE_PORT:?GATEWAY_SERVICE_PORT is required}

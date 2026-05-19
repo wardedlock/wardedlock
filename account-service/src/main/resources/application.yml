@@ -6,11 +6,11 @@ spring:
       - optional:file:.env
       - optional:file:../.env
   datasource:
-    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${ACCOUNT_DB}
-    username: ${ACCOUNT_USER}
-    password: ${ACCOUNT_PASSWORD}
+    url: jdbc:postgresql://${POSTGRES_HOST:?POSTGRES_HOST is required}:${POSTGRES_PORT:?POSTGRES_PORT is required}/${ACCOUNT_DB:?ACCOUNT_DB is required}
+    username: ${ACCOUNT_USER:?ACCOUNT_USER is required}
+    password: ${ACCOUNT_PASSWORD:?ACCOUNT_PASSWORD is required}
   flyway:
     enabled: false   # External Flyway runner handles migration; see ADR-0004
 
 server:
-  port: ${ACCOUNT_SERVICE_PORT}
+  port: ${ACCOUNT_SERVICE_PORT:?ACCOUNT_SERVICE_PORT is required}

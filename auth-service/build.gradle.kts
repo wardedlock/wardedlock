@@ -1,14 +1,15 @@
 plugins {
-    id("wardedlock.java-conventions")
-    id("wardedlock.spring-boot-microservice")
-    id("wardedlock.jpa-postgres-conventions")
-    id("wardedlock.web-security-conventions")
-    id("wardedlock.mapstruct-conventions")
+    id("wardedlock.core.java-conventions")
+    id("wardedlock.core.boot")
+    id("wardedlock.web.mvc")
+    id("wardedlock.data.jpa")
+    id("wardedlock.web.security")
+    id("wardedlock.codegen.mapstruct")
+    id("wardedlock.data.redis")
 }
 
 description = "auth-service"
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-data-redis")
-    testImplementation("org.springframework.boot:spring-boot-starter-data-redis-test")
+    implementation(project(":core-common"))
 }
